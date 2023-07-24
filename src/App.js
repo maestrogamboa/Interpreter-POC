@@ -7,13 +7,19 @@ import "./app.css"
 function App() {
 
   const [assignmentClicked, setAssignmentClicked] = useState({})
-  const assignmentObject = {
+  const assignmentList = [{
     title: "assigment 1",
     date: "date",
     instructions: "instructions",
     recording: "recording video"
-  }
-  const assignmentList = [assignmentObject]
+  }, 
+  {
+    title: "assigment 2",
+    date: "date",
+    instructions: "instructions",
+    recording: "recording video"
+  }]
+  
 
 
   return (
