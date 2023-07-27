@@ -1,13 +1,3 @@
-
-.navMenu{
-    background-color: #d84949;
-    width: 100%;
-    text-align: center;
-    line-height: 75px;
-    font-size: 30px;
-    
-}
-
 .mainSections{
     display: flex;
     flex-direction: row;
