@@ -2,6 +2,7 @@ import { useState } from "react";
 import LeftMenu from "./components/LeftMenu";
 import MiddleSection from "./components/MiddleSection";
 import NavMenu from "./components/NavMenu";
+import "./components/NavMenu.css"
 import "./app.css"
 
 function App() {

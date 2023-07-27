@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+}
+
+nav {
+    background-color: #d84949;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 4rem;
+    font-size: 2rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: white;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: .25rem;
+}
+
+.nav li.active {
+   background-color: blue;
+}
+
+.nav li:hover {
+    background-color: blue;
+}
