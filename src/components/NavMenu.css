@@ -15,8 +15,8 @@ nav {
     margin: 0;
     list-style: none;
     display: flex;
-    gap: 4rem;
-    font-size: 2rem;
+    justify-content: space-between;
+    font-size: 1rem;
 }
 
 .nav a {
