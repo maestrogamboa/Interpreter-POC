@@ -3,11 +3,14 @@ body {
 }
 
 nav {
-    background-color: #d84949;
+    background-color: rgb(255, 255, 255);
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    padding: 0 15px;
+    box-shadow: 0 10px 30px #10101040;
 }
 
 .nav ul {
@@ -21,7 +24,7 @@ nav {
 
 .nav a {
     text-decoration: none;
-    color: white;
+    color: rgb(12, 12, 12);
     height: 100%;
     display: flex;
     align-items: center;
@@ -34,4 +37,10 @@ nav {
 
 .nav li:hover {
     background-color: blue;
+}
+
+.NavContainer{
+    box-shadow: 0 2px 4px #00000040;
+
+
 }

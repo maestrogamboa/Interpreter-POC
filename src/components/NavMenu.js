@@ -2,6 +2,9 @@ import React from 'react'
 
 function NavMenu() {
   return (
+    <div className='NavContainer'>
+
+  
     <nav class= "nav">
       <a href= "/" class= "Logo"> 
         Logo  
@@ -15,6 +18,7 @@ function NavMenu() {
         </li>
       </ul>
     </nav>
+    </div>
   )
 }
 

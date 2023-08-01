@@ -8,59 +8,31 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import video from '../assets/testInterpreterApp.mp4'
+import Button from '@mui/material/Button';
 
 
 function MiddleSection(props) {
   const [MenuValue, setMenuValue] = React.useState(0);
-  const videoRef = useRef(null);
   
-
-  const handleChange = (event, newValue) => {
-    setMenuValue(newValue);
+  const handleButtonClick = () => {
+    // Replace 'https://www.example.com' with the URL you want to open in the new tab
+    console.log("clicking")
+    window.open('/startAssignment', '_blank');
   };
-  const startRecording = async () => {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-          videoRef.current.srcObject = stream;
-        })
-        .catch(function (error) {
-          console.log("Something went wrong!");
-        });
-  }};
 
   return (
+    <>
+    {props.selectedAssignment && 
     <div>
-     <h3 className='assignmentTitle'>Assigment title</h3>
-    <div>
-    <TabContext value={MenuValue}>
-      <div>
-      <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Recording" value="1" />
-            <Tab label="Instructions" value="2" />
-          </TabList>
-      </div>
-      <div>
-      <TabPanel value="1">
-        <video width="320" height="240" controls autoPlay>
-        <source src={video} type="video/mp4"></source>
-        item 1
-        </video >
-        <video
-        ref={videoRef}
-        style={{ width: '100%', maxWidth: '500px' }}
-        autoPlay
-        playsInline
-        muted // Muting the video to avoid feedback loop
-      />
-      <button  onClick={startRecording}></button>
-      </TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
-      </div>
-      </TabContext>
+     <h3 className='assignmentTitle'>{props.assignmentClicked.title}</h3>
+    <div className='info'>
+      <h4>{props.assignmentClicked.language}</h4>
+      <Button variant="contained" onClick = {handleButtonClick}>Start Assigment</Button>
     
     </div>
     </div>
+    }
+    </>
   )
 }
 
