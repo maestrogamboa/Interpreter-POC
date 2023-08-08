@@ -18,3 +18,23 @@
 .info{
     text-align: left;
 }
+.mainDiv{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.assignmentDiv{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 3rem;
+    
+}
+.startAssigment{
+    height: 100%;
+    flex-direction: column;
+    align-content: flex-end;
+}
