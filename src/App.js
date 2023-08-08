@@ -14,14 +14,14 @@ function App() {
   const [selectedAssignment, setSelectedAssignment] = useState(false)
 
   const assignmentList = [{
-    title: "assigment 1",
+    title: "Assigment 1",
     date: "date",
     instructions: "instructions",
     recording: "recording video",
     language:"Portuguese"
   }, 
   {
-    title: "assigment 2",
+    title: "Assigment 2",
     date: "date",
     instructions: "instructions",
     recording: "recording video",
