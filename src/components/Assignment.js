@@ -7,6 +7,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import video from '../assets/testInterpreterApp.mp4'
+import "./Buttons.css"
 
 
 function Assignment() {
@@ -107,9 +108,9 @@ function Assignment() {
         playsInline
         muted // Muting the video to avoid feedback loop
       />
-      <button  onClick={startRecording}></button>
-      <button  onClick={startRecording}>Play Button</button>
-      <button onClick={stopRecording} > Stop Recording</button>
+      <button  color= 'sucess' size='medium' variant="contained" onClick={startRecording}> Start Recording</button>
+      <button  size='medium' variant="contained" onClick={startRecording}>Play Button</button>
+      <button  color='error' size='medium' variant="contained" onClick={stopRecording}> Stop Recording</button>
       </div>
     
     </div>
