@@ -7,7 +7,6 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import video from '../assets/testInterpreterApp.mp4'
-import "./Buttons.css"
 
 
 function Assignment() {
