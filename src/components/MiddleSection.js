@@ -22,7 +22,7 @@ function MiddleSection(props) {
 
   return (
     <>
-    {props.selectedAssignment && 
+    {/* {props.selectedAssignment && 
     <div>
      <h3 className='assignmentTitle'>{props.assignmentClicked.title}</h3>
     <div className='info'>
@@ -31,7 +31,11 @@ function MiddleSection(props) {
     
     </div>
     </div>
-    }
+    } */}
+    <div className='mainDiv'>
+    <h1 className='assignmentTitleMain'>Welcome User</h1>
+    <h4 className='assignmentSubtitleMain'>Click on an assignment to get started</h4>
+    </div>
     </>
   )
 }
