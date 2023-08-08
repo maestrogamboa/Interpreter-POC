@@ -108,7 +108,6 @@ function Assignment() {
         muted // Muting the video to avoid feedback loop
       />
       <button  color= 'sucess' size='medium' variant="contained" onClick={startRecording}> Start Recording</button>
-      <button  size='medium' variant="contained" onClick={startRecording}>Play Button</button>
       <button  color='error' size='medium' variant="contained" onClick={stopRecording}> Stop Recording</button>
       </div>
     
