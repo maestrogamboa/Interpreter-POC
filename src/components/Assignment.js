@@ -7,6 +7,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import video from '../assets/testInterpreterApp.mp4'
+import './Buttons.css'
 
 
 function Assignment() {
@@ -91,24 +92,27 @@ function Assignment() {
 
   return (
     <div>
-     <h3 className='assignmentTitle'>Assigment title</h3>
+     <h3 className='assignmentTitle'>Translation Text</h3>
     <div>
    
       <div>
-      
-        <video width="320" height="240" controls autoPlay>
+        <center>
+        <video width="1080" controls autoPlay>
         <source src={video} type="video/mp4"></source>
         item 1
         </video >
-        <video
+        {/* <video
         ref={videoRef}
         style={{ width: '100%', maxWidth: '500px' }}
         autoPlay
         playsInline
-        muted // Muting the video to avoid feedback loop
-      />
-      <button  color= 'sucess' size='medium' variant="contained" onClick={startRecording}> Start Recording</button>
-      <button  color='error' size='medium' variant="contained" onClick={stopRecording}> Stop Recording</button>
+        muted // Muting the video to avoid feedback loop 
+        /> */}
+        </center>
+        <div className='buttons'>
+          <button className='startButton' onClick={startRecording}> Start Recording</button>
+          <button className='stopButton' onClick={stopRecording}> Stop Recording</button>
+        </div>
       </div>
     
     </div>
