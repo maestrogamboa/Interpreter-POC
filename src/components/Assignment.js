@@ -17,9 +17,21 @@ function Assignment() {
   const recordedChunks = useRef([]);
   console.log("chucks", recordedChunks)
   const videoRef = useRef(null);
-  const startPlaying = useRef(null);
-  console.log(startPlaying.current)
+  const translationVideo = useRef(null);
+  console.log (translationVideo.current)
+  const [currentTime, setCurrentTime] = useState(0);
   
+
+  const pauseTimes = [5];
+  
+  const handleTimeUpdate = () => {
+    const currentTime = Math.floor(translationVideo.current.currentTime);
+    setCurrentTime(currentTime);
+    if (pauseTimes.includes(currentTime)) {
+      translationVideo.current.pause();
+      //setShowQuestion(true);
+    }
+  };
 
   const handleChange = (event, newValue) => {
     setMenuValue(newValue);
@@ -34,7 +46,7 @@ function Assignment() {
     
       console.log(stream)
       videoRef.current.srcObject = streamCamera;
-      startPlaying.current.play()
+     translationVideo.current.play()
     
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
@@ -66,7 +78,7 @@ function Assignment() {
   const stopRecording = () => {
     if (mediaRecorder) {
       console.log("media is here")
-      startPlaying.current.pause()
+     translationVideo.current.pause()
       mediaRecorder.stop();
       setMediaRecorder(null);
       videoRef.current.srcObject = null;
@@ -101,7 +113,7 @@ function Assignment() {
    
       <div>
         <center className='videoContainer'>
-        <video src={video} style={{ width: '800px', height:'500px'}}  controls ref={startPlaying}/>
+        <video src={video} style={{ width: '800px', height:'500px'}}  controls ref= {translationVideo} onTimeUpdate={handleTimeUpdate}/>
         {/* <source src={video} type="video/mp4"></source> */}
       
          <video
@@ -109,7 +121,7 @@ function Assignment() {
         style={{ width: '600px', height:'500px' }}
         autoPlay
         playsInline
-        muted // Muting the video to avoid feedback loop 
+        muted // Muting the video to avoid feedback loop
         /> 
         </center>
         <div className='buttons'>
