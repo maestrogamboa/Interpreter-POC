@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import Tabs from '@mui/material/Tabs';
@@ -10,6 +10,7 @@ import video from '../assets/testInterpreterApp.mp4'
 import './Assignment.css'
 import { FFmpeg } from '@ffmpeg/ffmpeg'
 import { fetchFile, toBlobURL} from '@ffmpeg/util'
+import Button from '@mui/material/Button';
 
 
 function Assignment() {
@@ -25,19 +26,71 @@ function Assignment() {
   //console.log (translationVideo.current)
   const [currentTime, setCurrentTime] = useState(0);
   const [showQuestion, setShowQuestion] = useState(false);
+  const videoURL = useRef(null);
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [response, setResponse] = useState(null);
+  const [score, setScore] = useState({});
+  console.log(score.score)
+  const [question, setQuestion] = useState(null);
+  const [questionLoading, setQuestionLoading] = useState(false);
+  const [isResponseReady, setIsResponseReady] = useState(false);
+  const [isResponseLoadin, setIsResponseLoading] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  console.log('isVideoReady', isVideoReady)
+  console.log('isResponseReady', isResponseReady)
+  console.log('showQuestion', showQuestion)
+  
+  console.log('questiooon', question)
+  const interpretation = useRef("");
+
+  
   
 
+  
+  
+  
+
+  const fetchVideoURL = async () => {
+    const video_information = sessionStorage.getItem('videoData')
+    const parsedVideoInfo = JSON.parse(video_information)
+
+    const body_data = {"video_name": parsedVideoInfo.video_name}
+    console.log(body_data)
+    const request = await fetch("http://127.0.0.1:8080/get_video",{method:"POST",
+     headers:{ 'Content-Type': 'application/json'},
+     body: JSON.stringify(body_data)
+    })
+    const data = await request.json()
+    videoURL.current = data.videoURL
+    setIsVideoReady(true)
+
+  }
+
+  useEffect( () => {
+  fetchVideoURL()
+  }, [])
   const pauseTimes = [50,];
 
-  const timesAndQuestions = {5:'Introduce Yourself', 57:'It sounds like you alrady had an ultrasound today..'};
+  const timesAndQuestions = [{'time': 57.00, "textToTranslate":'It sounds like you already had an ultrasound today', "LanguageTo":"spanish"},
+   {'time': 64, "textToTranslate":'and most of that went well', "LanguageTo":"spanish"},
+    {'time': 70, "textToTranslate":'so, Im just going to start by checking your breathing and lungs first', "LanguageTo":"spanish"}];
   
   const handleTimeUpdate = () => {
     const currentTime = Math.floor(translationVideo.current.currentTime);
-    setCurrentTime(currentTime);
-    if (timesAndQuestions.hasOwnProperty(currentTime)) {
+    setCurrentTime('currentTime', currentTime);
+
+    const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) === 0); // Find index of the item
+    if (index !== -1) {
+      const removedItem = timesAndQuestions.splice(index, 1)[0]; // Remove item from array and store it
+      console.log('Removed item:', removedItem); // Log the removed item
       translationVideo.current.pause();
       setShowQuestion(true);
+      setQuestion(removedItem);
     }
+    /*if (timesAndQuestions.hasOwnProperty(currentTime)) {
+      translationVideo.current.pause();
+      setShowQuestion(true);
+    }*/
   };
 
   const handleChange = (event, newValue) => {
@@ -46,7 +99,7 @@ function Assignment() {
 
   const ffmpeg = new FFmpeg();
   
-  const extractAudio = async () => {
+  /* const extractAudio = async () => {
       // Load ffmpeg
       const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm";
       
@@ -82,32 +135,95 @@ function Assignment() {
     o.href = url;
     o.download = 'aduio_recording.webm';
 
-  }
+  }*/
+
 
   const translateRecording = async () =>{
-    const streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true })
-
-    const audioRecorder = new MediaRecorder(streamAudio);
+   try{
+    const streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true, video:false})
+  
+    const audioRecorder = new MediaRecorder(streamAudio, {mimeType : 'audio/webm'});
     setAudioRecorder(audioRecorder);
+    console.log(audioRecorder)
 
     const audioChunks = [];
     audioRecorder.ondataavailable = (event) => {
+      console.log('theres data')
       audioChunks.push(event.data);
     };
 
+    audioRecorder.start()
+
     audioRecorder.onstop = async () =>{
       audioRecordedChunks.current = audioChunks
-      saveAudioRecording();
+      console.log(audioChunks)
+      console.log("hitting here")
+      const audioBlob = new Blob(audioRecordedChunks.current, { type: 'audio/flac' }); // Change type to 'audio/flac'
+      const formData = new FormData();
+      const audioTest = formData.get('audio')
+      formData.append('audio', audioBlob);
+      console.log(formData.get('audio'))
+      //saveAudioRecording();
+
+      try {
+        const data =  await fetch("http://127.0.0.1:8080/audio_to_text", {
+          method: 'POST',
+          
+          body:formData,
+        })
+        const response = await data.json()
+        interpretation.current = response.text
+        getScore()
+        setIsResponseReady(true)
+        setShowQuestion(false)
+        console.log("response", response.text)
+      }
+        catch (error){
+          console.log(error)
+        }
       
+    }}
+    catch(e) {
+      console.log(e)
     }
   }
 
-  const stopTranslateRecording = async () => {
+  const getScore =  async () => {
+   const body_data = {"sentence_to":question.textToTranslate,
+  'interpretation':interpretation.current}
+  console.log('body_dataa', body_data)
+    try {const score =  await fetch("http://127.0.0.1:8080/interpret", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' // Specify content type as JSON
+        },
+          body:JSON.stringify(body_data),
+        })
+
+        const response = await score.json()
+        setScore(response)
+        console.log('score', response)
+      }
+      catch (e){
+        console.log(e)
+      }
+  }
+
+  const ContinueVideo = () => {
+    setIsResponseReady(false)
+    setScore({})
+    translationVideo.current.play()
+  }
+
+
+  const stopTranslateRecording =  () => {
     if (audioRecorder) {
+      console.log(audioRecorder)
       console.log('stopped recording')
       audioRecorder.stop();
       setAudioRecorder(null);
       //setShowQuestion(false)
+      
 
       //videoRef.current.srcObject = null;
       
@@ -117,23 +233,28 @@ function Assignment() {
 
 
   const startRecording = async () => {
-    extractAudio();
+    //extractAudio();
     try{
       const streamCamera = await navigator.mediaDevices.getUserMedia({ video: true })
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: true,
       });
-    
+
+      // set contorl to false
+      
       console.log(stream)
       videoRef.current.srcObject = streamCamera;
+      //setIsCameraOn(true)
      translationVideo.current.play()
     
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
+      
 
       const chunks = [];
       recorder.ondataavailable = (event) => {
+        console.log('video data')
         chunks.push(event.data);
       };
 
@@ -147,6 +268,7 @@ function Assignment() {
       };
 
       recorder.start();
+      setIsCameraOn(true)
     } catch (error){
       console.log(error)
 
@@ -182,7 +304,7 @@ function Assignment() {
     // Create a link element and set its href and download attributes
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'screen_recording.webm';
+    a.download = 'screen_recording.mp3';
 
     // Programmatically click the link to start the download
     a.click();
@@ -195,7 +317,7 @@ function Assignment() {
     }
 
     
-    const audioBlob = new Blob(audioRecordedChunks.current, { type: 'audio/webm' });
+    const audioBlob = new Blob(audioRecordedChunks.current, { type: 'audio/mp3' });
     const url = URL.createObjectURL(audioBlob);
     console.log("blobe done")
 
@@ -209,51 +331,87 @@ function Assignment() {
   }
   return (
     <div>
-     <h3 className='assignmentTitle'>Translation Text</h3>
-    <div>
-   
-      <div>
-        <center className='videoContainer'>
-        <video src={'https://storage.cloud.google.com/eggboa-audi/Spanish%20interpretation%20OBGY%20TVideos%20v1.mp4'} style={{ width: '800px', height:'500px'}}  controls ref= {translationVideo} onTimeUpdate={handleTimeUpdate}/>
-        {/* <source src={video} type="video/mp4"></source> */}
-      
-         <video
-        ref={videoRef}
-        style={{ width: '600px', height:'500px' }}
-        autoPlay
-        playsInline
-        muted // Muting the video to avoid feedback loop
-        /> 
-        </center>
-        <div className='buttons'>
-          <button className='startButton' onClick={startRecording}> Start Recording</button>
-          <button className='stopButton' onClick={stopRecording}> Stop Recording</button>
+      {isVideoReady && (
+        <div>
+          <h3 className='assignmentTitle'>Translation Text</h3>
+          <div>
+            <center className='videoContainer'>
+              <video src={videoURL.current} style={{ width: '800px', height:'500px'}} controls ref={translationVideo} onTimeUpdate={handleTimeUpdate}/>
+              <video
+                ref={videoRef}
+                style={{ width: '600px', height:'500px', backgroundColor:'#ccc'}}
+                autoPlay
+                playsInline
+                muted // Muting the video to avoid feedback loop
+                placeholder='video'
+              />
+            </center>
+            <div className='buttons'>
+              <button className='startButton' onClick={startRecording}>Start Recording</button>
+              <button className='stopButton' onClick={stopRecording}>Stop Recording</button>
+            </div>
+          </div>
         </div>
-      </div>
-    
+      )}
+      {showQuestion ? (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-evenly',
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#fff',
+          padding: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          width: '50%',
+          height: '50%'
+        }}>
+          <h2 style={{
+            width: '100%',
+            textAlign: 'center',
+          }}>Please interpret to {question.LanguageTo}</h2>
+          <p style={{
+            width: '100%',
+            textAlign: 'center',
+            marginBottom: '40px',
+            fontSize: '25px'
+          }}>{question.textToTranslate}</p>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+          }}>
+            <Button onClick={translateRecording} variant="contained">Record</Button>
+            <Button onClick={stopTranslateRecording} variant="outlined" color='error'>Stop Recording</Button>
+          </div>
+        </div>
+      ) : isResponseReady ? (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-evenly',
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#fff',
+          padding: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          width: '50%',
+          height: '50%'
+        }}>
+          {score.score ? <h2>{score.score}</h2> : <h2 style={{
+            width: '100%',
+            textAlign: 'center',
+          }}> Scoring response..</h2>}
+          <Button onClick={ContinueVideo} variant="contained">Continue</Button>
+        </div>
+      ) : null}
     </div>
-    {showQuestion && (
-
-      <div  style={{
-        display: 'block',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: '#fff',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-      }}>
-          <h2>Translate</h2>
-            <p>What is the capital of France?</p>
-            <button type="StartRecord" onClick={translateRecording}>Translate</button>
-            <button type="StopRecord" onClick={stopTranslateRecording}>Stop Recording</button>
-      </div>
-
-    )}
-    </div>
-  )
+  );
 }
 
 export default Assignment

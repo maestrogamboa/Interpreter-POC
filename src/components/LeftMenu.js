@@ -14,6 +14,7 @@ function LeftMenu(props) {
     setSelectedIndex(idx);
     props.setAssignmentClicked(assignment)
     props.setSelectedAssignment(true)
+    sessionStorage.setItem("videoData", JSON.stringify(assignment));
   };
   return (
     <div>

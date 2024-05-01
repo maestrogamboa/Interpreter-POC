@@ -5,6 +5,7 @@ import MiddleSection from "./MiddleSection"
 
 function Home(props) { 
 const [assignmentClicked, setAssignmentClicked] = useState({})
+console.log("assigment", assignmentClicked)
 const [selectedAssignment, setSelectedAssignment] = useState(false)
 //const [assignmentList, setAssignmentList] = useState({})
 
