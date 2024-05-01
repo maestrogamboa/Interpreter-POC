@@ -5,7 +5,7 @@ For this project, the user can start an assigment, and gets prompted to interpre
 The interprataton Audio gets converted fron Video/Webm format to WAV to it can be transformed into text by Google Speech to Text Service via API. \
 The generated text and the sentence to interpret from the video, are used to validate the interpretation by using VertexAI to prompt Google Gemini-1.5-pro-preview.
 
-# for this projet you will need to install:
+# For this projet you will need to install:
 Node.js and npm
 Docker Desktop
 
