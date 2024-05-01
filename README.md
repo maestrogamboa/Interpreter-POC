@@ -33,7 +33,7 @@ http://localhost:8080
 
 
 # Front End
-This project is for the Front End portion of the ap
+This section is for the front end portion of the ap
 # Project Setup
 1. Clone the respository
 2. In the terminal navigate to the root directory of your project
