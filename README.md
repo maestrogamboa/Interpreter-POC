@@ -1,7 +1,7 @@
 # Interpreter App
 Interpreter App Submition for the Google Hackathon project.\
 This is a point of concept to solve for the lack of training software available for companies to train and test their interpreters.\
-For this project, the user can start an assigment, and gets prompted to interpret at certain points of the video. The video pauses and provides the user a reminder of the sentence to interpret.\
+For this project, the user can start an assigment, and get prompted to interpret at certain points of the video. The video pauses and provides the user a reminder of the sentence to interpret.\
 The interprataton Audio gets converted fron Video/Webm format to WAV to it can be transformed into text by Google Speech to Text Service via API. \
 The generated text and the sentence to interpret from the video, are used to validate the interpretation by using VertexAI to prompt Google Gemini-1.5-pro-preview.
 
