@@ -36,7 +36,7 @@ function App() {
   useEffect(() => {
     const fetchVideos =  async () => {
       try{
-        const data =  await fetch("http://127.0.0.1:8080/get_videos_info");
+        const data =  await fetch("http://localhost:8080/get_videos_info");
         const jsonData =  await data.json();
         console.log(jsonData)
         setAssignmentList(jsonData)

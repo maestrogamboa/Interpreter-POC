@@ -28,13 +28,11 @@ function Assignment() {
   const [showQuestion, setShowQuestion] = useState(false);
   const videoURL = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [response, setResponse] = useState(null);
   const [score, setScore] = useState({});
   console.log(score.score)
   const [question, setQuestion] = useState(null);
-  const [questionLoading, setQuestionLoading] = useState(false);
   const [isResponseReady, setIsResponseReady] = useState(false);
-  const [isResponseLoadin, setIsResponseLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   console.log('isVideoReady', isVideoReady)
   console.log('isResponseReady', isResponseReady)
@@ -42,6 +40,7 @@ function Assignment() {
   
   console.log('questiooon', question)
   const interpretation = useRef("");
+  console.log(interpretation)
 
   
   
@@ -56,7 +55,7 @@ function Assignment() {
 
     const body_data = {"video_name": parsedVideoInfo.video_name}
     console.log(body_data)
-    const request = await fetch("http://127.0.0.1:8080/get_video",{method:"POST",
+    const request = await fetch("http://localhost:8080/get_video",{method:"POST",
      headers:{ 'Content-Type': 'application/json'},
      body: JSON.stringify(body_data)
     })
@@ -69,29 +68,69 @@ function Assignment() {
   useEffect( () => {
   fetchVideoURL()
   }, [])
-  const pauseTimes = [50,];
+  const pauseTimes = [57,64,70];
 
-  const timesAndQuestions = [{'time': 57.00, "textToTranslate":'It sounds like you already had an ultrasound today', "LanguageTo":"spanish"},
-   {'time': 64, "textToTranslate":'and most of that went well', "LanguageTo":"spanish"},
-    {'time': 70, "textToTranslate":'so, Im just going to start by checking your breathing and lungs first', "LanguageTo":"spanish"}];
-  
-  const handleTimeUpdate = () => {
-    const currentTime = Math.floor(translationVideo.current.currentTime);
-    setCurrentTime('currentTime', currentTime);
+  let timesAndQuestions = [{'time': 57, "textToTranslate":'It sounds like you already had an ultrasound today', "LanguageTo":"spanish", 'stopped':false},
+   {'time': 64, "textToTranslate":'and most of that went well', "LanguageTo":"spanish", 'stopped':false},
+    {'time': 70, "textToTranslate":'so, Im just going to start by checking your breathing and lungs first', "LanguageTo":"spanish", 'stopped':false}];
 
-    const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) === 0); // Find index of the item
+    let stoppedTimes = [];
+
+    const handleTimeUpdate = () => {
+      const currentTime = Math.floor(translationVideo.current.currentTime);
+      setCurrentTime('currentTime', currentTime);
+    
+      if (pauseTimes.includes(currentTime)) {
+        // Perform actions when the current time matches a number in pauseTimes
+        translationVideo.current.pause();
+        const item = timesAndQuestions.find(item => item.time == currentTime);
+        console.log('iteem', item)
+        setShowQuestion(true);
+        setQuestion(item);
+        // You may also set other state variables or perform additional actions here
+      }
+    };
+    
+    /*const handleTimeUpdate = () => {
+      const currentTime = Math.floor(translationVideo.current.currentTime);
+      setCurrentTime('currentTime', currentTime);
+    
+      // Log current time for debugging
+      console.log('Current Time:', currentTime);
+    
+      const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) < 0.001 && !stoppedTimes.includes(item.time));
+    
+      console.log('Index:', index);
+    
+      if (index !== -1) {
+        const item = timesAndQuestions[index];
+        console.log('Found item:', item);
+    
+        // Update the stopped property of the found item
+        stoppedTimes.push(item.time);
+        console.log('Stopped times:', stoppedTimes);
+    
+        // Perform other actions
+        translationVideo.current.pause();
+        setShowQuestion(true);
+        setQuestion(item);
+      } else {
+        console.log('Item not found or already stopped.');
+      }
+     /*const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) === 0.000  && !item.stopped); // Find index of the item
     if (index !== -1) {
-      const removedItem = timesAndQuestions.splice(index, 1)[0]; // Remove item from array and store it
-      console.log('Removed item:', removedItem); // Log the removed item
+      const item = timesAndQuestions[index];
+      item.stopped = true; // Change the stopped property to true
+      console.log('Updated item:', item); // Log the updated item
       translationVideo.current.pause();
       setShowQuestion(true);
-      setQuestion(removedItem);
+      setQuestion(item);
     }
-    /*if (timesAndQuestions.hasOwnProperty(currentTime)) {
+   if (timesAndQuestions.hasOwnProperty(currentTime)) {
       translationVideo.current.pause();
       setShowQuestion(true);
-    }*/
-  };
+    }
+  };*/
 
   const handleChange = (event, newValue) => {
     setMenuValue(newValue);
@@ -139,6 +178,8 @@ function Assignment() {
 
 
   const translateRecording = async () =>{
+    setShowQuestion(false)
+    setIsRecording(true)
    try{
     const streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true, video:false})
   
@@ -174,8 +215,10 @@ function Assignment() {
         const response = await data.json()
         interpretation.current = response.text
         getScore()
+        setIsRecording(false)
         setIsResponseReady(true)
-        setShowQuestion(false)
+        
+        
         console.log("response", response.text)
       }
         catch (error){
@@ -384,7 +427,6 @@ function Assignment() {
             justifyContent: 'space-around',
           }}>
             <Button onClick={translateRecording} variant="contained">Record</Button>
-            <Button onClick={stopTranslateRecording} variant="outlined" color='error'>Stop Recording</Button>
           </div>
         </div>
       ) : isResponseReady ? (
@@ -403,13 +445,39 @@ function Assignment() {
           width: '50%',
           height: '50%'
         }}>
-          {score.score ? <h2>{score.score}</h2> : <h2 style={{
+          {score.score ? <h2 style={{
+            width: '100%',
+            textAlign: 'center',
+          }}>Result : {score.score}<br></br>Your said: {interpretation.current}</h2> : <h2 style={{
             width: '100%',
             textAlign: 'center',
           }}> Scoring response..</h2>}
           <Button onClick={ContinueVideo} variant="contained">Continue</Button>
         </div>
-      ) : null}
+      ) : isRecording ? (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-evenly',
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#fff',
+          padding: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          width: '50%',
+          height: '50%'
+        }}>
+          <h2 style={{
+            width: '100%',
+            textAlign: 'center',
+          }}>Recording ...</h2>
+          <Button onClick={stopTranslateRecording} variant="outlined" color='error'>Stop Recording</Button>
+        </div>
+      ): null
+    }
     </div>
   );
 }
