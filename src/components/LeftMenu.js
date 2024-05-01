@@ -8,11 +8,13 @@ import { ListItemButton} from '@mui/material';
 
 function LeftMenu(props) {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  console.log(props.assignmentList)
 
   const handleClick = (idx, assignment) => {
     setSelectedIndex(idx);
     props.setAssignmentClicked(assignment)
     props.setSelectedAssignment(true)
+    sessionStorage.setItem("videoData", JSON.stringify(assignment));
   };
   return (
     <div>
@@ -26,8 +28,8 @@ function LeftMenu(props) {
                 >
                   <ListItemButton selected={selectedIndex === idx} onClick={() => handleClick(idx, assignment)}>
                   <ListItemText
-                    primary={assignment.title}
-                    secondary={assignment.date}
+                    primary={assignment.video_name}
+                    secondary={assignment.due_date}
                   />
                   </ListItemButton>
                   

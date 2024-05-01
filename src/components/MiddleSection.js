@@ -24,7 +24,7 @@ function MiddleSection(props) {
     <>
     {props.selectedAssignment ?
     <div className='assignmentDiv'>
-     <h1 className='assignmentTitle'>{props.assignmentClicked.title}</h1>
+     <h1 className='assignmentTitle'>{props.assignmentClicked.video_name}</h1>
      <h4>Language: {props.assignmentClicked.language}</h4>
     <div className='startAssigment'>
       <Button variant="contained" onClick = {handleButtonClick}>Start Assigment</Button>
