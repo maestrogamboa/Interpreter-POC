@@ -8,8 +8,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import video from '../assets/testInterpreterApp.mp4'
 import './Assignment.css'
-import { FFmpeg } from '@ffmpeg/ffmpeg'
-import { fetchFile, toBlobURL} from '@ffmpeg/util'
 import Button from '@mui/material/Button';
 
 
@@ -91,90 +89,11 @@ function Assignment() {
       }
     };
     
-    /*const handleTimeUpdate = () => {
-      const currentTime = Math.floor(translationVideo.current.currentTime);
-      setCurrentTime('currentTime', currentTime);
-    
-      // Log current time for debugging
-      console.log('Current Time:', currentTime);
-    
-      const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) < 0.001 && !stoppedTimes.includes(item.time));
-    
-      console.log('Index:', index);
-    
-      if (index !== -1) {
-        const item = timesAndQuestions[index];
-        console.log('Found item:', item);
-    
-        // Update the stopped property of the found item
-        stoppedTimes.push(item.time);
-        console.log('Stopped times:', stoppedTimes);
-    
-        // Perform other actions
-        translationVideo.current.pause();
-        setShowQuestion(true);
-        setQuestion(item);
-      } else {
-        console.log('Item not found or already stopped.');
-      }
-     /*const index = timesAndQuestions.findIndex(item => Math.abs(item.time - currentTime) === 0.000  && !item.stopped); // Find index of the item
-    if (index !== -1) {
-      const item = timesAndQuestions[index];
-      item.stopped = true; // Change the stopped property to true
-      console.log('Updated item:', item); // Log the updated item
-      translationVideo.current.pause();
-      setShowQuestion(true);
-      setQuestion(item);
-    }
-   if (timesAndQuestions.hasOwnProperty(currentTime)) {
-      translationVideo.current.pause();
-      setShowQuestion(true);
-    }
-  };*/
-
   const handleChange = (event, newValue) => {
     setMenuValue(newValue);
   };
 
-  const ffmpeg = new FFmpeg();
   
-  /* const extractAudio = async () => {
-      // Load ffmpeg
-      const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm";
-      
-      
-      await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-        wasmURL: await toBlobURL(
-          `${baseURL}/ffmpeg-core.wasm`,
-          "application/wasm"
-        ),
-        workerURL: await toBlobURL(
-          `${baseURL}/ffmpeg-core.worker.js`,
-          "text/javascript"
-        ),
-      });
-      
-
-  console.log("loading ffmpeg")
-  // Read the input file
-  await ffmpeg.writeFile('input.mp4', await fetchFile(video));
-  console.log("fetching file")
-  // Run the ffmpeg command to extract audio
-  await ffmpeg.exec('-i', 'input.mp4', 'output.mp3');
-  console.log("extracting audio")
-  // Read the result
-  const data = ffmpeg.readFile('output.mp3');
-
-  // Create a URL for the extracted audio
-  const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mp3' }));
-  console.log("creating url to download")
-
-  const o = document.createElement('o');
-    o.href = url;
-    o.download = 'aduio_recording.webm';
-
-  }*/
 
 
   const translateRecording = async () =>{

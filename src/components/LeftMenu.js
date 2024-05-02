@@ -28,7 +28,7 @@ function LeftMenu(props) {
                 >
                   <ListItemButton selected={selectedIndex === idx} onClick={() => handleClick(idx, assignment)}>
                   <ListItemText
-                    primary={assignment.video_name}
+                    primary={assignment.title}
                     secondary={assignment.due_date}
                   />
                   </ListItemButton>
