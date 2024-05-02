@@ -1,0 +1,40 @@
+.MiddleMainContainer{
+    background-color: #f1f1f1;
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+    line-height: 75px;
+    font-size: 30px;
+    flex-grow: 1;
+}
+
+.assignmentTitle{
+    text-align: left;
+}
+.instructions{
+    margin: 0;
+    color: #a0a2af;
+}
+.info{
+    text-align: left;
+}
+.mainDiv{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.assignmentDiv{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 3rem;
+    
+}
+.startAssigment{
+    height: 100%;
+    flex-direction: column;
+    align-content: flex-end;
+}

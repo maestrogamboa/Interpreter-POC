@@ -1,0 +1,21 @@
+.mainSections{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+
+.navMainContainer{
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 10px;
+    text-align: left;
+    font-size: 15px;
+    flex-grow: .7;
+      
+}
+.middleMainContainer{
+    background-color: #FFFFFF;
+    text-align: center;
+    flex-grow: 1;
+}
