@@ -36,3 +36,46 @@
     background-color: red;
     color: white;
 }
+.mainVideo {
+    width: 800px; 
+    height: 500px;
+}
+.videoRecording{
+    width: 600px;
+    height: 500px;
+    background-color:#ccc;
+}
+
+.questionDiv{
+    display: 'flex';
+    flex-direction: 'column';
+    justify-content: 'space-evenly';
+    position: 'absolute';
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 50%;
+    height: 50%
+}
+.questionHeader{
+    width: 100%;
+    text-align: 'center'
+}
+
+.questionP{
+    width: 100%;
+    text-align: 'center';
+    margin-bottom: 40px;
+    font-size: 25px
+}
+.buttonDiv{
+    display: 'flex';
+    justify-content: 'space-around';
+}
+.assignmentTitle{
+    margin-left: 20px;
+}

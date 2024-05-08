@@ -1,12 +1,4 @@
 import React, {useRef, useState, useEffect} from 'react'
-import Stack from '@mui/material/Stack';
-import Paper from '@mui/material/Paper';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import video from '../assets/testInterpreterApp.mp4'
 import './Assignment.css'
 import Button from '@mui/material/Button';
 
@@ -18,41 +10,24 @@ function Assignment() {
   // const [recordedChunks, setRecordedChunks] = useState([]);
   const recordedChunks = useRef([]);
   const audioRecordedChunks = useRef([]);
-  //console.log("chucks", audioRecordedChunks)
   const videoRef = useRef(null);
   const translationVideo = useRef(null);
-  //console.log (translationVideo.current)
-  const [currentTime, setCurrentTime] = useState(0);
   const [showQuestion, setShowQuestion] = useState(false);
   const videoURL = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [score, setScore] = useState({});
-  console.log(score.score)
   const [question, setQuestion] = useState(null);
   const [isResponseReady, setIsResponseReady] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
-  console.log('isVideoReady', isVideoReady)
-  console.log('isResponseReady', isResponseReady)
-  console.log('showQuestion', showQuestion)
-  
-  console.log('questiooon', question)
   const interpretation = useRef("");
-  console.log(interpretation)
 
-  
-  
-
-  
-  
-  
 
   const fetchVideoURL = async () => {
     const video_information = sessionStorage.getItem('videoData')
     const parsedVideoInfo = JSON.parse(video_information)
 
     const body_data = {"video_name": parsedVideoInfo.video_name}
-    console.log(body_data)
     const request = await fetch("http://localhost:8080/get_video",{method:"POST",
      headers:{ 'Content-Type': 'application/json'},
      body: JSON.stringify(body_data)
@@ -76,13 +51,11 @@ function Assignment() {
 
     const handleTimeUpdate = () => {
       const currentTime = Math.floor(translationVideo.current.currentTime);
-      setCurrentTime('currentTime', currentTime);
     
       if (pauseTimes.includes(currentTime)) {
         // Perform actions when the current time matches a number in pauseTimes
         translationVideo.current.pause();
         const item = timesAndQuestions.find(item => item.time == currentTime);
-        console.log('iteem', item)
         setShowQuestion(true);
         setQuestion(item);
         // You may also set other state variables or perform additional actions here
@@ -93,9 +66,6 @@ function Assignment() {
     setMenuValue(newValue);
   };
 
-  
-
-
   const translateRecording = async () =>{
     setShowQuestion(false)
     setIsRecording(true)
@@ -104,11 +74,9 @@ function Assignment() {
   
     const audioRecorder = new MediaRecorder(streamAudio, {mimeType : 'audio/webm'});
     setAudioRecorder(audioRecorder);
-    console.log(audioRecorder)
 
     const audioChunks = [];
     audioRecorder.ondataavailable = (event) => {
-      console.log('theres data')
       audioChunks.push(event.data);
     };
 
@@ -116,13 +84,10 @@ function Assignment() {
 
     audioRecorder.onstop = async () =>{
       audioRecordedChunks.current = audioChunks
-      console.log(audioChunks)
-      console.log("hitting here")
       const audioBlob = new Blob(audioRecordedChunks.current, { type: 'audio/flac' }); // Change type to 'audio/flac'
       const formData = new FormData();
       const audioTest = formData.get('audio')
       formData.append('audio', audioBlob);
-      console.log(formData.get('audio'))
       //saveAudioRecording();
 
       try {
@@ -136,9 +101,6 @@ function Assignment() {
         getScore()
         setIsRecording(false)
         setIsResponseReady(true)
-        
-        
-        console.log("response", response.text)
       }
         catch (error){
           console.log(error)
@@ -153,7 +115,6 @@ function Assignment() {
   const getScore =  async () => {
    const body_data = {"sentence_to":question.textToTranslate,
   'interpretation':interpretation.current}
-  console.log('body_dataa', body_data)
     try {const score =  await fetch("http://127.0.0.1:8080/interpret", {
           method: 'POST',
           headers: {
@@ -164,7 +125,6 @@ function Assignment() {
 
         const response = await score.json()
         setScore(response)
-        console.log('score', response)
       }
       catch (e){
         console.log(e)
@@ -180,14 +140,8 @@ function Assignment() {
 
   const stopTranslateRecording =  () => {
     if (audioRecorder) {
-      console.log(audioRecorder)
-      console.log('stopped recording')
       audioRecorder.stop();
       setAudioRecorder(null);
-      //setShowQuestion(false)
-      
-
-      //videoRef.current.srcObject = null;
       
     }
 
@@ -195,7 +149,6 @@ function Assignment() {
 
 
   const startRecording = async () => {
-    //extractAudio();
     try{
       const streamCamera = await navigator.mediaDevices.getUserMedia({ video: true })
       const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -204,24 +157,18 @@ function Assignment() {
       });
 
       // set contorl to false
-      
-      console.log(stream)
       videoRef.current.srcObject = streamCamera;
-      //setIsCameraOn(true)
-     translationVideo.current.play()
+      translationVideo.current.play()
     
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
       
-
       const chunks = [];
       recorder.ondataavailable = (event) => {
-        console.log('video data')
         chunks.push(event.data);
       };
 
       recorder.onstop = async () => {
-        console.log("hitting chunks")
         // setRecordedChunks(chunks);
         recordedChunks.current = chunks
         
@@ -231,6 +178,7 @@ function Assignment() {
 
       recorder.start();
       setIsCameraOn(true)
+
     } catch (error){
       console.log(error)
 
@@ -242,15 +190,14 @@ function Assignment() {
 
 
   const stopRecording = () => {
+
     if (mediaRecorder) {
-      console.log("media is here")
      translationVideo.current.pause()
       mediaRecorder.stop();
       setMediaRecorder(null);
       videoRef.current.srcObject = null;
       
     }
-    
   };
 
   const saveRecording = () => {
@@ -259,7 +206,6 @@ function Assignment() {
       return;
     }
 
-    
     const blob = new Blob(recordedChunks.current, { type: 'video/webm' });
     const url = URL.createObjectURL(blob);
 
@@ -278,10 +224,8 @@ function Assignment() {
       return;
     }
 
-    
     const audioBlob = new Blob(audioRecordedChunks.current, { type: 'audio/mp3' });
     const url = URL.createObjectURL(audioBlob);
-    console.log("blobe done")
 
     // Create a link element and set its href and download attributes
     const a = document.createElement('a');
@@ -295,13 +239,13 @@ function Assignment() {
     <div>
       {isVideoReady && (
         <div>
-          <h3 className='assignmentTitle'>Translation Text</h3>
+          <h3 className='assignmentTitle'>Assignment Page</h3>
           <div>
             <center className='videoContainer'>
-              <video src={videoURL.current} style={{ width: '800px', height:'500px'}} controls ref={translationVideo} onTimeUpdate={handleTimeUpdate}/>
+              <video src={videoURL.current} className='mainVideo' controls ref={translationVideo} onTimeUpdate={handleTimeUpdate}/>
               <video
                 ref={videoRef}
-                style={{ width: '600px', height:'500px', backgroundColor:'#ccc'}}
+                className='videoRecording'
                 autoPlay
                 playsInline
                 muted // Muting the video to avoid feedback loop
@@ -316,83 +260,22 @@ function Assignment() {
         </div>
       )}
       {showQuestion ? (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-evenly',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          padding: '20px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          width: '50%',
-          height: '50%'
-        }}>
-          <h2 style={{
-            width: '100%',
-            textAlign: 'center',
-          }}>Please interpret to {question.LanguageTo}</h2>
-          <p style={{
-            width: '100%',
-            textAlign: 'center',
-            marginBottom: '40px',
-            fontSize: '25px'
-          }}>{question.textToTranslate}</p>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-          }}>
+        <div className='questionDiv'>
+          <h2 className='questionHeader'>Please interpret to {question.LanguageTo}</h2>
+          <p className='questionP'>{question.textToTranslate}</p>
+          <div className='buttonDiv'>
             <Button onClick={translateRecording} variant="contained">Record</Button>
           </div>
         </div>
       ) : isResponseReady ? (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-evenly',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          padding: '20px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          width: '50%',
-          height: '50%'
-        }}>
-          {score.score ? <h2 style={{
-            width: '100%',
-            textAlign: 'center',
-          }}>Result : {score.score}<br></br>Your said: {interpretation.current}</h2> : <h2 style={{
-            width: '100%',
-            textAlign: 'center',
-          }}> Scoring response..</h2>}
+        <div className='questionDiv'>
+          {score.score ? <h2 className='questionHeader'>Result : {score.score}<br></br>Your said: {interpretation.current}</h2> : <h2 className='questionHeader'>
+             Scoring response..</h2>}
           <Button onClick={ContinueVideo} variant="contained">Continue</Button>
         </div>
       ) : isRecording ? (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-evenly',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#fff',
-          padding: '20px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          width: '50%',
-          height: '50%'
-        }}>
-          <h2 style={{
-            width: '100%',
-            textAlign: 'center',
-          }}>Recording ...</h2>
+        <div className='questionDiv'>
+          <h2 className='questionHeader'>Recording ...</h2>
           <Button onClick={stopTranslateRecording} variant="outlined" color='error'>Stop Recording</Button>
         </div>
       ): null
