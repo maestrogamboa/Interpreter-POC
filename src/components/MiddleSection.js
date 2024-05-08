@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 
 function MiddleSection(props) {
   const handleButtonClick = () => {
-    // Replace 'https://www.example.com' with the URL you want to open in the new tab
     console.log("clicking")
     window.open('/startAssignment', '_blank');
   };

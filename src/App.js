@@ -9,7 +9,9 @@ function App() {
 
   const [assignmentList, setAssignmentList] = useState({})
   const [loading, setLoading] = useState(true);
-  
+
+
+  // fetch video info (google cloud storage)
   useEffect(() => {
     const fetchVideos =  async () => {
       try{

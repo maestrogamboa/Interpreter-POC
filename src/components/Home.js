@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import NavMenu from "./NavMenu"
 import LeftMenu from "./LeftMenu"
 import MiddleSection from "./MiddleSection"

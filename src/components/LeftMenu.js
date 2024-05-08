@@ -10,6 +10,7 @@ function LeftMenu(props) {
   const [selectedIndex, setSelectedIndex] = useState(null);
   console.log(props.assignmentList)
 
+  // select assigment
   const handleClick = (idx, assignment) => {
     setSelectedIndex(idx);
     props.setAssignmentClicked(assignment)
