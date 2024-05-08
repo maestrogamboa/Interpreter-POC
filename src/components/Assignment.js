@@ -91,6 +91,7 @@ function Assignment() {
       //saveAudioRecording();
 
       try {
+        // send request to convert audio to tex (google speech to text)
         const data =  await fetch("http://127.0.0.1:8080/audio_to_text", {
           method: 'POST',
           
@@ -112,6 +113,7 @@ function Assignment() {
     }
   }
 
+  // send request to get score (VertexAI)
   const getScore =  async () => {
    const body_data = {"sentence_to":question.textToTranslate,
   'interpretation':interpretation.current}
@@ -147,7 +149,7 @@ function Assignment() {
 
   }
 
-
+  // stop recording
   const startRecording = async () => {
     try{
       const streamCamera = await navigator.mediaDevices.getUserMedia({ video: true })
